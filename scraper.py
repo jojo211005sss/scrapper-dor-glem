@@ -304,12 +304,13 @@ def login_and_scrape():
             # Determine Excel output name based on the first scraped question's subunit
             output_file = EXCEL_FILE
             first_subunit = scraped_questions[0]['subunit']
-            if "Study Unit 18" in first_subunit:
-                output_file = "study_unit_18.xlsx"
-            elif "Study Unit 19" in first_subunit:
-                output_file = "study_unit_19.xlsx"
-            elif "Study Unit 20" in first_subunit:
-                output_file = "study_unit_20.xlsx"
+            
+            # Match "Study Unit XX" and "Subunit YY" to create specific filename
+            match = re.search(r'Study Unit (\d+).*?Subunit (\d+)', first_subunit, re.IGNORECASE)
+            if match:
+                unit_num = match.group(1)
+                subunit_num = match.group(2)
+                output_file = f"study_unit_{unit_num}_subunit_{subunit_num}.xlsx"
             else:
                 match = re.search(r'Study Unit (\d+)', first_subunit)
                 if match:
