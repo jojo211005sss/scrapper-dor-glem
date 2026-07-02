@@ -1,58 +1,61 @@
-# Web Scraper with Secure Login and Excel Integration
+# Gleim Study Session Auto-Scraper (Lead-and-Scrape)
 
-This repository contains a secure, locally runnable web scraper built using Python, **Playwright**, and **openpyxl**. It logs into a password-protected website, scrapes data paginated across multiple pages, and writes or appends the data directly into your pre-designed Excel workbook.
-
----
-
-## 🔒 Security Best Practice
-
-**Never share your password or username in the AI chat window or check them into version control.**
-
-Your credentials are loaded securely at runtime on your local machine using a `.env` file, which is listed in `.gitignore` so it is never shared or uploaded.
+An intelligent, robust web scraper built with Python, **Playwright**, and **openpyxl** to extract questions, answer options, correct choices, and detailed explanations from Gleim Study Sessions directly into a premium-designed Excel workbook.
 
 ---
 
-## 🚀 Setup Instructions
+## 🚀 The "Lead-and-Scrape" Workflow
 
-Follow these steps to set up and run the scraper on your machine.
+Unlike traditional fully-automated scrapers that easily break due to CAPTCHAs, MFA, session timeouts, or complex dashboard changes, this scraper is built around a robust **hybrid workflow**:
+
+1. **You Lead**: Run the script. A secure Chromium browser opens. You log in manually, set up your study session (e.g., choose units, set max questions, choose order), and navigate until you are looking at **Question 1**.
+2. **It Scrapes**: Press `Enter` in your terminal. The scraper instantly scans all open browser tabs, detects the active study session window, and takes over to automatically click, extract, and document all questions.
+
+This hybrid approach ensures **100% reliability**, handles all multi-tab navigation, and keeps your login credentials safe.
+
+---
+
+## 🔒 Security First
+
+* **Zero Credentials Leaked**: Your login credentials can be saved locally in a `.env` file for auto-fill convenience, but the script supports complete manual login.
+* **Ignored Files**: The `.gitignore` is pre-configured to ensure your `.env` configuration, logs, and scraped `.xlsx` spreadsheets are never pushed to GitHub.
+
+---
+
+## 🛠️ Features
+
+* **Smart Tab Detection**: Automatically finds the active study session tab even if you open multiple pages or tabs during setup.
+* **Premium Formatting**: Automatically duplicates the styling of `my_template.xlsx` (column widths, border structures, and navy header highlights) when generating a new workbook.
+* **Duplicate Prevention**: Reads any existing workbook and automatically skips previously scraped questions based on their `(Subunit, Question ID)` keys. This allows you to scrape a large unit across multiple overlapping sessions without duplicating data.
+* **HTML Table parsing**: Automatically converts HTML tables in questions and explanations to Markdown tables in Excel for readability.
+
+---
+
+## 📋 Setup & Usage
 
 ### 1. Install Dependencies
-
-Ensure you have Python 3.8+ installed on your Mac. Open your terminal in this directory and run:
-
+Make sure you have Python 3.8+ installed, then run:
 ```bash
-# Install Python packages
+# Install required Python packages
 pip install -r requirements.txt
 
 # Install Playwright browser binaries
 playwright install chromium
 ```
 
-### 2. Configure Environment Variables
+### 2. Configure Environment (Optional)
+Copy `.env.example` to `.env` and fill in your credentials to auto-fill the login form:
+```bash
+cp .env.example .env
+```
 
-1. Copy the `.env.example` file to a new file named `.env`:
-   ```bash
-   cp .env.example .env
-   ```
-2. Open `.env` in a text editor and fill in the values:
-   - `SCRAPER_USERNAME` and `SCRAPER_PASSWORD` with your actual login credentials.
-   - `LOGIN_URL` with the URL of the login form.
-   - `SELECTOR_...` selectors for locating elements on the page (see below on how to find them).
-   - `EXCEL_TEMPLATE_NAME` with the name of your Excel file (e.g., `template.xlsx`). Make sure you put the Excel file in this directory!
-
-### 3. Customize Selectors (Optional)
-
-If the website uses different elements, open your browser, right-click on the inputs/buttons, choose **Inspect**, and find their CSS Selectors (e.g. `#username`, `.email-input`, `button[type="submit"]`). Update these values in your `.env` file.
-
-### 4. Customize Scraped Columns (Optional)
-
-Open `scraper.py` and modify the `parse_row_data` function if you need to extract specific elements (like cell values from a table or text from cards). By default, it parses standard HTML tables or lists.
-
-### 5. Run the Scraper
-
-To run the scraper:
+### 3. Run the Scraper
+Start the script:
 ```bash
 python scraper.py
 ```
 
-A visible Chromium browser window will open, and you can watch the script fill in the credentials, log in, navigate the pages, extract the data, and append it to your Excel file.
+1. In the Chromium window that opens, log in and navigate to the dashboard.
+2. Select your study units and set your question options (e.g., select max session size of 125).
+3. Once you see **Question 1** on the page, return to your terminal and press **Enter**.
+4. Sit back and watch the scraper extract the entire session!
